@@ -1,7 +1,8 @@
  const dotenv = require('dotenv').config()
 const express = require('express')
- const mongoose =require('mongoose')
- 
+const mongoose =require('mongoose');
+const Task = require('./model/taskModel');
+ const taskRoutes = require('./routes/taskRoute')
 // const connectDB= require('./config/connectDB')
 mongoose.set('strictQuery', false);
 const app = express()
@@ -10,14 +11,10 @@ const app = express()
 app.get('/',(req,res)=>{
     res.send("Home Page")
 })
-
-// create a Task
-  app.post("/api/tasks",async (req,res)=>{
-    console.log(req.body)
-     res.send(
-        'task created'
-     )
-  })
+// middlewares
+ app.use(express.json())
+ app.use(express.urlencoded({extended:false}))
+ app.use(taskRoutes)
 const PORT = process.env.PORT || 5000
 
  mongoose
