@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose =require('mongoose');
 const Task = require('./model/taskModel');
  const taskRoutes = require('./routes/taskRoute')
+ const cors = require('cors')
 // const connectDB= require('./config/connectDB')
 mongoose.set('strictQuery', false);
 const app = express()
@@ -13,8 +14,10 @@ app.get('/',(req,res)=>{
 })
 // middlewares
  app.use(express.json())
+ app.use(cors())
  app.use(express.urlencoded({extended:false}))
  app.use('/api/tasks',taskRoutes)
+
 const PORT = process.env.PORT || 5000
 
  mongoose
