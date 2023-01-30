@@ -1,11 +1,11 @@
 import React from 'react'
 
-function TaskForm({createTask,name,handleInputChange}) {
+function TaskForm({createTask,name,handleInputChange,isEditing,updateTask}) {
   return (
-    <form className='task-form' onSubmit={createTask}>
+    <form className='task-form' onSubmit={isEditing ? updateTask :createTask}>
         <input type='text' placeholder='Add a task ' name='name' value={name} 
         onChange={handleInputChange}/>
-         <button type='submit'> Add</button>
+         <button type='submit'>{isEditing ? "Edit":"Add"}</button>
     </form>
   )
 }

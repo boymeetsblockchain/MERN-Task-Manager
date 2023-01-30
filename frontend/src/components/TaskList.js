@@ -14,7 +14,8 @@ function TaskList() {
         completed:false
     })
     const{name}= formData
-
+ const[isEditing, setIsEditing] =useState(false)
+ const[tasksId, setTasksId] = useState('')
     const getTasks = async ()=>{
       setIsLoading(true)
       try {
@@ -44,6 +45,7 @@ function TaskList() {
          )
          setFormData({...formData,name:""})
          toast.success("task added successfully")
+         getTasks()
       } catch (error) {
         toast.error(error.message)
         
@@ -53,16 +55,41 @@ function TaskList() {
     const deleteTask = async(id)=>{
       try {
         await axios.delete(`http://localhost:5000/api/tasks/${id}`)
-        
+        toast.success("deleted successfully")
+        getTasks()
+      } catch (error) {
+        toast.error(error.message)
+        console.log(error)
+      }
+    }
+     const getSingleTask = async(task)=>{
+      setFormData({
+        name:task.name, completed:false
+      })
+      setTasksId(task._id)
+      setIsEditing(true)
+     }
+     const updateTask =async(e)=>{
+      e.preventDefault()
+      if(name ===""){
+        return toast.error("input field cannot be empty")
+
+      }
+      try {
+         await axios.put(`http://localhost:5000/api/tasks/${tasksId}`,formData)
+         setFormData({...formData, name:""})
+         setIsEditing(false)
+         getTasks()
       } catch (error) {
         toast.error(error.message)
       }
-    }
+
+     }
   return (
     <div>
         <h2>Task Manager</h2>
         <TaskForm  name={name} handleInputChange={handleInputChange}
-        createTask={createTask}/>
+        createTask={createTask} isEditing={isEditing} updateTask={updateTask}/>
         <div className='--flex-between --pb'>
          <p>
             <b>Total Task:</b> 0
@@ -87,7 +114,7 @@ function TaskList() {
              {tasks.map((task, index)=>{
               return (
                 <Task key={task.id} task={task} index={index}
-                deleteTask={deleteTask}/>
+                deleteTask={deleteTask} getSingleTask={getSingleTask}/>
               )
              })}
             </>
